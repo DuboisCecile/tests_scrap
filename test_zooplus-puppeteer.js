@@ -9,11 +9,11 @@ async function configureBrowser(url) {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(url);
-
   return { page, browser };
 }
 
 async function findUrl(page) {
+  // chargement de la page de recherche, puis du lien du premier produit pour pouvoir aller sur cette page de détails
   let html = await page.evaluate(() => document.body.innerHTML);
   let $ = await cheerio.load(html);
   let urlList = [];
@@ -27,6 +27,7 @@ async function findUrl(page) {
 }
 
 async function findDetails(page) {
+  // chargement de la page de détails, puis du nom du produit, et des différentes poids avec leurs prix associés
   let html = await page.evaluate(() => document.body.innerHTML);
   let $ = await cheerio.load(html);
 
@@ -35,7 +36,7 @@ async function findDetails(page) {
   const offers = $(".product__offer", html).get();
 
   offers.forEach(async (elem) => {
-    // elem = 1 bloc de poids / prix
+    // elem = 1 bloc de poids/prix
     const volume = $(".article-description", elem, html).text().trim();
     const price = $("span.price__amount", elem).text().trim();
     productDetails.push({ name: productName, volume, price });
@@ -45,19 +46,20 @@ async function findDetails(page) {
 }
 
 async function startScraping() {
+  // fonction de base
   const { page: searchPage, browser: browserUrl } = await configureBrowser(
     baseURL
   );
   const urlList = await findUrl(searchPage);
   const detailsUrl = `${prefix}${urlList[0]}`;
   console.log(detailsUrl);
-  await browserUrl.close();
+  await browserUrl.close(); // fermeture de puppeteer sur la page de recherche
   const { page: detailsPage, browser: browserDetails } = await configureBrowser(
     detailsUrl
   );
   const productDetails = await findDetails(detailsPage);
   console.log("productDetails   ", productDetails);
-  await browserDetails.close();
+  await browserDetails.close(); // fermeture de puppeteer sur la page de détails
 }
 
 startScraping();
