@@ -9,7 +9,8 @@ async function configureBrowser(url) {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(url);
-  return page;
+
+  return { page, browser };
 }
 
 async function findUrl(page) {
@@ -44,13 +45,19 @@ async function findDetails(page) {
 }
 
 async function startScraping() {
-  const searchPage = await configureBrowser(baseURL);
+  const { page: searchPage, browser: browserUrl } = await configureBrowser(
+    baseURL
+  );
   const urlList = await findUrl(searchPage);
   const detailsUrl = `${prefix}${urlList[0]}`;
   console.log(detailsUrl);
-  const detailsPage = await configureBrowser(detailsUrl);
+  await browserUrl.close();
+  const { page: detailsPage, browser: browserDetails } = await configureBrowser(
+    detailsUrl
+  );
   const productDetails = await findDetails(detailsPage);
   console.log("productDetails   ", productDetails);
+  await browserDetails.close();
 }
 
 startScraping();
