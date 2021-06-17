@@ -1,24 +1,24 @@
-const axios = require("axios");
-const cheerio = require("cheerio");
+// const axios = require("axios");
+const rp = require("request-promise");
+// const cheerio = require("cheerio");
 
-const baseURL = "https://www.zooplus.fr/esearch.htm#q%3D7613035120402"; // pour code barre 7613035120402
-//"https://www.zooplus.fr/esearch.htm#q%3DPurina%2520chien";
+const baseURL = "https://www.amazon.fr/s?k=7613035120402"; // pour code barre 7613035120402
 
 (async () => {
-  const html = await axios.get(baseURL);
+  const html = await rp(baseURL);
   console.log(html);
-  const $ = await cheerio.load(html.data);
+  // const $ = await cheerio.load(html.data);
   // console.log($.html());
-  let data = [];
-  $("body").each((i, elem) => {
-    data.push({
-      // title: $(elem).find("h1").text(),
-      // paragraph: $(elem).find("p").text(),
-      link: $(elem).find("a.exo-prod-url").attr("href"),
-      // link: $(elem).find("a.exo-prod-url").attr("href"),
-    });
-  });
-  console.log(data);
+  // let data = [];
+  // $("body").each((i, elem) => {
+  //   data.push({
+  //     dataIndex: $(elem).find("data-index").text(),
+  // paragraph: $(elem).find("p").text(),
+  // link: $(elem).find("a.exo-prod-url").attr("href"),
+  // link: $(elem).find("a.exo-prod-url").attr("href"),
+  // });
+  // });
+  // console.log(data);
 })();
 
 /* si body en ligne 10, cela renvoie :

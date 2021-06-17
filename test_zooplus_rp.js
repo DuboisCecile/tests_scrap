@@ -1,11 +1,12 @@
-const axios = require("axios");
+// const axios = require("axios");
+const rp = require("request-promise");
 const cheerio = require("cheerio");
 
 const baseURL = "https://www.zooplus.fr/esearch.htm#q%3D7613035120402"; // pour code barre 7613035120402
 //"https://www.zooplus.fr/esearch.htm#q%3DPurina%2520chien";
 
 (async () => {
-  const html = await axios.get(baseURL);
+  const html = await rp(baseURL);
   console.log(html);
   const $ = await cheerio.load(html.data);
   // console.log($.html());
